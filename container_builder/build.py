@@ -42,7 +42,6 @@ def build(path, image, push=False, repository=None, tag='latest', quiet: bool = 
     if quiet:
         sys.stdout = open(os.devnull, 'w')
 
-    sys.stdout.write('123' * 150)
     spinner = Spinner(stdout=sys.stdout)
     curses.initscr()
 
