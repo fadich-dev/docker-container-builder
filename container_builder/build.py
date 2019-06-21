@@ -47,10 +47,9 @@ def build(path, image, push=False, repository=None, tag='latest'):
     for s in res:
         sys.stdout.write(s.get('stream') or '')
 
-    if tag:
+    if push:
         img.tag(repository, tag)
 
-    if push:
         sys.stdout.write('[{}] Pushing...\n'.format(image))
         stream_out(docker_client.images.push(repository, tag, stream=True))
         sys.stdout.write('[{}] Pushed successfully.\n'.format(image))
