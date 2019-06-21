@@ -40,7 +40,7 @@ def stream_out(stream):
 
 
 def build(path, image, push=False, repository=None, tag='latest'):
-    spinner.start('Building {}'.format(path))
+    spinner.start('[{}] Building from {}'.format(image, path))
     img, res = docker_client.images.build(path=path, tag=image)
     spinner.stop()
 
@@ -51,9 +51,9 @@ def build(path, image, push=False, repository=None, tag='latest'):
         img.tag(repository, tag)
 
     if push:
-        sys.stdout.write('Pushing...\n')
+        sys.stdout.write('[{}] Pushing...\n'.format(image))
         stream_out(docker_client.images.push(repository, tag, stream=True))
-        sys.stdout.write('Pushed successfully.\n')
+        sys.stdout.write('[{}] Pushed successfully.\n'.format(image))
 
 
 def main(*args):
