@@ -59,7 +59,9 @@ def build(path, image, push=False, repository=None, tag='latest', quiet: bool = 
     if push:
         img.tag(repository, tag)
         sys.stdout.write('[{}] Pushing...\n'.format(image))
-        stream_out(docker_client.images.push(repository, tag, stream=True))
+        res = docker_client.images.push(repository, tag, stream=True)
+        if not quiet:
+            stream_out(res)
         sys.stdout.write('[{}] Pushed successfully.\n'.format(image))
 
 
