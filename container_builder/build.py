@@ -9,6 +9,12 @@ import curses
 
 docker_client = docker.from_env()
 
+stdscr = curses.initscr()
+
+curses.echo()
+curses.nocbreak()
+curses.endwin()
+
 
 def stream_out(stream):
     layers = {}
@@ -51,12 +57,6 @@ def build(path, image, push=False, repository=None, tag='latest'):
 
 
 def main(*args):
-    curses.initscr()
-
-    curses.echo()
-    curses.nocbreak()
-    curses.endwin()
-
     parser = argh.ArghParser()
     parser.add_commands([
         build,
