@@ -6,7 +6,10 @@ import json
 import docker
 import curses
 
+from .spinner import Spinner
 
+
+spinner = Spinner()
 docker_client = docker.from_env()
 
 
@@ -37,9 +40,10 @@ def stream_out(stream):
 
 
 def build(path, image, push=False, repository=None, tag='latest'):
-    sys.stdout.write('Building {}\n'.format(path))
-
+    spinner.start('Building {}'.format(path))
     img, res = docker_client.images.build(path=path, tag=image)
+    spinner.stop()
+
     for s in res:
         sys.stdout.write(s.get('stream') or '')
 
