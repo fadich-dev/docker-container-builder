@@ -39,29 +39,37 @@ def stream_out(stream):
     curses.endwin()
 
 
-def build(path, image, push=False, repository=None, tag='latest'):
-    spinner.start('[{}] Building from {}'.format(image, path))
-    img, res = docker_client.images.build(path=path, tag=image)
-    spinner.stop()
+def build(path, image, push=False, repository=None, tag='latest', quiet: bool = False):
+    if not quiet:
+        curses.initscr()
 
-    for s in res:
-        sys.stdout.write(s.get('stream') or '')
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
+
+        spinner.start('[{}] Building from {}'.format(image, path))
+
+    img, res = docker_client.images.build(path=path, tag=image)
+
+    if not quiet:
+        spinner.stop()
+
+        for s in res:
+            sys.stdout.write(s.get('stream') or '')
 
     if push:
         img.tag(repository, tag)
 
-        sys.stdout.write('[{}] Pushing...\n'.format(image))
-        stream_out(docker_client.images.push(repository, tag, stream=True))
-        sys.stdout.write('[{}] Pushed successfully.\n'.format(image))
+        if not quiet:
+            sys.stdout.write('[{}] Pushing...\n'.format(image))
+        res = docker_client.images.push(repository, tag, stream=True)
+
+        if not quiet:
+            stream_out(res)
+            sys.stdout.write('[{}] Pushed successfully.\n'.format(image))
 
 
 def main(*args):
-    curses.initscr()
-
-    curses.echo()
-    curses.nocbreak()
-    curses.endwin()
-
     parser = argh.ArghParser()
     parser.add_commands([
         build,
