@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import argh
 import json
@@ -40,33 +41,28 @@ def stream_out(stream):
 
 
 def build(path, image, push=False, repository=None, tag='latest', quiet: bool = False):
-    if not quiet:
-        curses.initscr()
+    if quiet:
+        f = open(os.devnull, 'w')
+        sys.stdout = f
 
-        curses.echo()
-        curses.nocbreak()
-        curses.endwin()
+    curses.initscr()
 
-        spinner.start('[{}] Building from {}'.format(image, path))
+    curses.echo()
+    curses.nocbreak()
+    curses.endwin()
 
+    spinner.start('[{}] Building from {}'.format(image, path))
     img, res = docker_client.images.build(path=path, tag=image)
+    spinner.stop()
 
-    if not quiet:
-        spinner.stop()
-
-        for s in res:
-            sys.stdout.write(s.get('stream') or '')
+    for s in res:
+        sys.stdout.write(s.get('stream') or '')
 
     if push:
         img.tag(repository, tag)
-
-        if not quiet:
-            sys.stdout.write('[{}] Pushing...\n'.format(image))
-        res = docker_client.images.push(repository, tag, stream=True)
-
-        if not quiet:
-            stream_out(res)
-            sys.stdout.write('[{}] Pushed successfully.\n'.format(image))
+        sys.stdout.write('[{}] Pushing...\n'.format(image))
+        stream_out(docker_client.images.push(repository, tag, stream=True))
+        sys.stdout.write('[{}] Pushed successfully.\n'.format(image))
 
 
 def main(*args):
