@@ -50,8 +50,8 @@ def build(path, image, push=False, repository=None, tag='latest'):
         sys.stdout.write('Pushed successfully.\n')
 
 
-if __name__ == '__main__':
-    stdscr = curses.initscr()
+def main(*args):
+    curses.initscr()
 
     curses.echo()
     curses.nocbreak()
@@ -63,3 +63,7 @@ if __name__ == '__main__':
     ])
 
     parser.dispatch()
+
+
+if __name__ == '__main__':
+    sys.exit(main(*sys.argv[1:]))
