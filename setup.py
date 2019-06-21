@@ -1,6 +1,5 @@
 import os
 
-from typing import Union, Generator
 from setuptools import setup, find_packages
 
 WOR_DIR = os.path.dirname(os.path.abspath(__file__))
