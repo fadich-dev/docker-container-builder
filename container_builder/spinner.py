@@ -1,14 +1,16 @@
-from sys import stdout
+import sys
+
 from time import sleep
 from threading import Thread
 
 
 class Spinner:
 
-    def __init__(self, speed: float = 3.0):
+    def __init__(self, speed: float = 3.0, stdout = None):
         self._speed = speed
         self._started = False
         self._thread = None  # type: Thread
+        self.stdout = stdout or sys.stdout
 
     def start(self, label: str = ''):
         if self._started:
@@ -27,13 +29,13 @@ class Spinner:
         self._started = False
         self._thread.join()
         self._thread = None
-        stdout.write('\n')
+        self.stdout.write('\n')
 
     def _run(self, label: str = ''):
         i = 0
         while self._started:
-            stdout.write('\r{}{:<5}'.format(label, '.' * i))
-            stdout.flush()
+            self.stdout.write('\r{}{:<5}'.format(label, '.' * i))
+            self.stdout.flush()
             i = i + 1 if i < 5 else 0
             sleep(1 / self._speed)
 

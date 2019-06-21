@@ -9,8 +9,6 @@ import curses
 
 from .spinner import Spinner
 
-
-spinner = Spinner()
 docker_client = docker.from_env()
 
 
@@ -45,6 +43,7 @@ def build(path, image, push=False, repository=None, tag='latest', quiet: bool = 
         f = open(os.devnull, 'w')
         sys.stdout = f
 
+    spinner = Spinner(stdout=sys.stdout)
     curses.initscr()
 
     curses.echo()
