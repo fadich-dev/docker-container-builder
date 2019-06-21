@@ -43,11 +43,12 @@ def build(path, image, push=False, repository=None, tag='latest', quiet: bool = 
         sys.stdout = open(os.devnull, 'w')
 
     spinner = Spinner(stdout=sys.stdout)
-    curses.initscr()
+    if not quiet:
+        curses.initscr()
 
-    curses.echo()
-    curses.nocbreak()
-    curses.endwin()
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
 
     spinner.start('[{}] Building from {}'.format(image, path))
     img, res = docker_client.images.build(path=path, tag=image)
