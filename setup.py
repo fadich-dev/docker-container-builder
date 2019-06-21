@@ -1,5 +1,9 @@
+import os
+
 from typing import Union, Generator
 from setuptools import setup, find_packages
+
+WOR_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def read_file(f: str, by_line: bool = False) -> Union[str, Generator]:
@@ -14,7 +18,7 @@ setup(
     description='Builder for Docker containers',
     version='0.1.0',
     packages=find_packages(),
-    install_requires=read_file('requirements.txt', by_line=False),
+    install_requires=read_file(os.path.join(WOR_DIR, 'requirements.txt'), by_line=False),
     entry_points={
         'console_scripts': [
             'dcb = container_builder.build:main',

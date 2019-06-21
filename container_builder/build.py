@@ -9,12 +9,6 @@ import curses
 
 docker_client = docker.from_env()
 
-stdscr = curses.initscr()
-
-curses.echo()
-curses.nocbreak()
-curses.endwin()
-
 
 def stream_out(stream):
     layers = {}
@@ -49,14 +43,22 @@ def build(path, image, push=False, repository=None, tag='latest'):
     for s in res:
         sys.stdout.write(s.get('stream') or '')
 
+    if tag:
+        img.tag(repository, tag)
+
     if push:
         sys.stdout.write('Pushing...\n')
-        img.tag(repository, tag)
         stream_out(docker_client.images.push(repository, tag, stream=True))
         sys.stdout.write('Pushed successfully.\n')
 
 
 def main(*args):
+    curses.initscr()
+
+    curses.echo()
+    curses.nocbreak()
+    curses.endwin()
+
     parser = argh.ArghParser()
     parser.add_commands([
         build,
