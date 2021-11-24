@@ -7,7 +7,7 @@ WOR_DIR = os.path.dirname(os.path.abspath(__file__))
 setup(
     name='container_builder',
     description='Builder for Docker containers',
-    version='0.2.4',
+    version='0.2.5',
     packages=find_packages(),
     install_requires=(
         'argh==0.26.2',
