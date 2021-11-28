@@ -45,8 +45,12 @@ def build(
     repository=None,
     tag='latest',
     quiet: bool = False,
-    **kwargs
+    extra: str = None
 ):
+    extra_kwargs = {}
+    if extra is not None:
+        extra_kwargs = json.loads(extra)
+
     if quiet:
         sys.stdout = open(os.devnull, 'w')
 
@@ -62,7 +66,7 @@ def build(
     img, res = docker_client.images.build(
         path=path,
         tag=image,
-        **kwargs
+        **extra_kwargs
     )
     spinner.stop()
 
