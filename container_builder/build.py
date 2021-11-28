@@ -45,11 +45,11 @@ def build(
     repository=None,
     tag='latest',
     quiet: bool = False,
-    extra: str = None
+    buildargs: str = None
 ):
-    extra_kwargs = {}
-    if extra is not None:
-        extra_kwargs = json.loads(extra)
+    buildargs_dict = {}
+    if buildargs is not None:
+        buildargs_dict = json.loads(buildargs)
 
     if quiet:
         sys.stdout = open(os.devnull, 'w')
@@ -63,12 +63,16 @@ def build(
         curses.endwin()
 
     spinner.start('[{}] Building from {}'.format(image, path))
-    img, res = docker_client.images.build(
-        path=path,
-        tag=image,
-        **extra_kwargs
-    )
-    spinner.stop()
+    try:
+        img, res = docker_client.images.build(
+            path=path,
+            tag=image,
+            buildargs=buildargs_dict
+        )
+    except Exception:
+        raise
+    finally:
+        spinner.stop()
 
     for s in res:
         sys.stdout.write(s.get('stream') or '')
