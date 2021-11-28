@@ -38,7 +38,15 @@ def stream_out(stream):
     curses.endwin()
 
 
-def build(path, image, push=False, repository=None, tag='latest', quiet: bool = False):
+def build(
+    path,
+    image,
+    push=False,
+    repository=None,
+    tag='latest',
+    quiet: bool = False,
+    **kwargs
+):
     if quiet:
         sys.stdout = open(os.devnull, 'w')
 
@@ -51,7 +59,11 @@ def build(path, image, push=False, repository=None, tag='latest', quiet: bool = 
         curses.endwin()
 
     spinner.start('[{}] Building from {}'.format(image, path))
-    img, res = docker_client.images.build(path=path, tag=image)
+    img, res = docker_client.images.build(
+        path=path,
+        tag=image,
+        **kwargs
+    )
     spinner.stop()
 
     for s in res:
